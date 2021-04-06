@@ -2,7 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import { withRouter } from 'react-router-dom'
 
-const Home = ({ history }) => {
+const ReservationList = ({ history }) => {
     return (
         <div className='d-flex justify-content-between flex-wrap'>
             <h4>Dashboard</h4>
@@ -18,4 +18,4 @@ const Home = ({ history }) => {
     )
 }
 
-export default withRouter(Home)
+export default withRouter(ReservationList)

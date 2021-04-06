@@ -10,9 +10,23 @@
     background-color: #1e00d8 !important;
 }
 
+.navbar-collapse {
+    background-color: #1e00d8 !important;
+    padding: 0;
+}
+
 .app-content {
-    margin-top: 15px;
-    height: 90vh;
+    margin-top: 50px;
+    height: calc(100vh - 90px);
+    padding: 10px;
+    overflow: auto;
+}
+
+.fixed-top.navbar {
+    height: 50px !important;
+}
+.main-footer {
+    height: 40px !important;
 }
 
 .input-group-text {
@@ -34,4 +48,25 @@
 
 .no-border {
     border: none !important;
+}
+
+.form-create .ant-select,
+.form-create input,
+.form-create textarea {
+    width: 100% !important;
+    height: inherit;
+}
+.form-create .ant-select-selector {
+    border-color: #00000096 !important;
+}
+
+.width-full {
+    width: 100%;
+}
+
+body {
+    overflow: hidden !important;
+}
+.mb-15 {
+    margin-bottom: 15px;
 }

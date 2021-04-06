@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import Users from '../Data/User'
 import { connect } from 'react-redux'
-import { callApi } from '../util/api'
 import { getStorage, setStorage } from '../util/storage'
 import Footer from './Footer'
 import Header from './Header'
@@ -37,8 +36,7 @@ const Login = (props) => {
         props.setToken(true)
         props.setUserInfo(res)
         props.history.push('/')
-        // window.location.assign('/')
-    }, [email, password])
+    }, [email, password, props])
 
     useEffect(() => {
         if (getStorage('token')) props.history.push('/')

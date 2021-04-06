@@ -4,7 +4,8 @@ import { getStorage } from '../util/storage'
 import Header from './Header'
 import Footer from './Footer'
 import Home from './Home'
-import LogOut from './LogOut'
+import ReservationList from './ReservationList'
+import ReservationForm from './ReservationForm'
 
 const Restricted = (props) => {
     useEffect(() => {
@@ -14,16 +15,12 @@ const Restricted = (props) => {
     return (
         <>
             <Header />
-            <div className='app-content content'>
-                <div className='content-overlay'></div>
-                <div className='header-navbar-shadow'></div>
-                <div className='content-wrapper'>
-                    <div className='content-header row'></div>
-                    <Switch>
-                        <Route path='/logout' component={LogOut} exact />
-                        <Route path='/' component={Home} exact />
-                    </Switch>
-                </div>
+            <div className='app-content'>
+                <Switch>
+                    <Route path='/' component={Home} exact />
+                    <Route path='/reservation-list' component={ReservationList} exact />
+                    <Route path='/create-reservation' component={ReservationForm} exact />
+                </Switch>
             </div>
             <Footer />
         </>
