@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Provider } from 'react-redux'
+import configureStore from './store'
+import { Redirect, BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import Restricted from './Components/Restricted'
+import { getStorage } from './util/storage'
+import Login from './Components/Login'
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './Components/header.css'
+
+const store = configureStore()
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    // let isAuth = store.getState().token
+
+    // let RestrictedRoutes = ({ component: Component, ...rest }) => {
+    //     return <Route {...rest} render={(props) => (!isAuth ? <Component {...props} /> : <Redirect to={'/'} />)} />
+    // }
+
+    return (
+        <Provider store={store}>
+            <Router>
+                <Switch>
+                    <Route path='/login' component={Login} exact />
+                    <Restricted />
+                    <Redirect from='*' to='/' />
+                </Switch>
+            </Router>
+        </Provider>
+    )
 }
 
-export default App;
+export default App

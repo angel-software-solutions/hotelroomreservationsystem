@@ -1,0 +1,37 @@
+.nav-link {
+    color: white !important;
+}
+
+.text-deco.nav-link:hover {
+    text-decoration: underline !important;
+}
+
+.bg-primary {
+    background-color: #1e00d8 !important;
+}
+
+.app-content {
+    margin-top: 15px;
+    height: 90vh;
+}
+
+.input-group-text {
+    background: white !important;
+}
+
+.btn-primary {
+    border-color: #1e00d8 !important;
+    color: black;
+    background: white !important;
+}
+.btn-primary:hover {
+    background: #1e00d8 !important;
+    color: white !important;
+}
+.btn-primary:hover input {
+    color: white !important;
+}
+
+.no-border {
+    border: none !important;
+}
