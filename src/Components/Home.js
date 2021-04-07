@@ -11,7 +11,7 @@ const Home = ({ history }) => {
                     Reservation List
                 </Button>
                 <Button className='ml-2' variant='contained' onClick={() => history.push('/create-reservation')}>
-                    Add Reservation
+                    New Reservation
                 </Button>
             </div>
         </div>

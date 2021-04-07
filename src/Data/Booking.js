@@ -1,23 +1,9 @@
+import moment from 'moment'
 import Room from './Room'
 import User from './User'
 
 const Bookings = {
-    bookings: [
-        {
-            id: 1,
-            createdAt: '',
-            updatedAt: '',
-            room: 100,
-            createdBy: 1,
-            client: {
-                name: 'Yashi Sardhara',
-                mobile: '2747830292',
-                email: 'yashi@gmail.com'
-            },
-            date: '',
-            notes: ''
-        }
-    ],
+    bookings: [],
 
     getAll() {
         var self = this
@@ -32,7 +18,6 @@ const Bookings = {
             let newlist = []
             list.forEach((val) => {
                 val.roomDetail = Room.find(val.room)
-                val.userDetail = User.find(val.createdBy)
                 newlist.push(val)
             })
             resolve(newlist)
@@ -56,7 +41,7 @@ const Bookings = {
 
     save(booking) {
         var self = this
-        var id = Number(booking.id)
+        var id = booking.id ? Number(booking.id) : 0
         var saved = false
         return new Promise(async (resolve) => {
             if (id !== 0) {
@@ -85,7 +70,17 @@ const Bookings = {
             }
             var current_list = self.find(id)
             current_list.name = booking.name
-            current_list.password = booking.password
+            current_list.updatedAt = moment().startOf('day').toISOString()
+            current_list.room = booking.room
+            current_list.notes = booking.notes
+            current_list.date = booking.date
+            current_list.client = booking.client
+            // TODO::verify client update
+            //     client: {
+            //         name: 'Yashi Sardhara',
+            //         mobile: '2747830292',
+            //         email: 'yashi@gmail.com'
+            //     },
             resolve(true)
         })
     },
@@ -98,7 +93,7 @@ const Bookings = {
             if (!self.bookings) {
                 await self.getAll()
             }
-            self.bookings.push(booking)
+            self.bookings.push({ ...booking, createdAt: moment().startOf('day').toISOString(), updatedAt: moment().startOf('day').toISOString() })
             resolve(true)
         })
     },

@@ -5,6 +5,7 @@ import { Select, DatePicker } from 'antd'
 import { capitalize, getStorage } from '../util/storage'
 import Room from '../Data/Room'
 import moment from 'moment'
+import Bookings from '../Data/Booking'
 
 function MultiFields(field) {
     let wide = isMobile() ? 100 : field.length === 1 ? 100 : 100 / field.length - 5
@@ -63,12 +64,14 @@ function isMobile() {
     return window.innerWidth <= 767 ? true : false
 }
 
-const ReservationForm = ({ history }) => {
+const ReservationForm = ({ history, location }) => {
     const user = getStorage('user')
-    // TODO: edit
     const [item, setItem] = useState({ client: {}, name: user.name })
     const [error, setError] = useState({ client: {} })
     const [room, setRoom] = useState([])
+    const [booking, setBooking] = useState([])
+    const [roomList, setRoomList] = useState([])
+    const [edit, setEdit] = useState({})
 
     const validate = () => {
         let flag = true
@@ -112,9 +115,10 @@ const ReservationForm = ({ history }) => {
         return flag
     }
 
-    const onSave = () => {
+    const onSave = async () => {
         if (validate()) {
-            // TODO: submit
+            await Bookings.save(item)
+            history.push('/reservation-list')
         }
     }
 
@@ -128,13 +132,37 @@ const ReservationForm = ({ history }) => {
 
     const getRooms = useCallback(async () => {
         let rooms = await Room.getAll()
-        // TODO: get non reserved rooms
         setRoom(rooms)
+        setRoomList(rooms.map((x) => x.id))
     }, [])
 
+    const getBooks = useCallback(async () => {
+        let book = await Bookings.getAll()
+        if (location.search) {
+            let itm = book.find((el) => el.id === parseInt(location.search.split('?')[1]))
+            if (itm) setEdit(itm)
+        }
+        setBooking(book)
+    }, [location.search])
+
     useEffect(() => {
+        getBooks()
         getRooms()
-    }, [getRooms])
+    }, [getRooms, getBooks])
+
+    useEffect(() => {
+        if (edit.room) setItem(edit)
+    }, [edit.room, edit])
+
+    useEffect(() => {
+        let found = item.date && booking.filter((el) => el.date === item.date).map((el) => el.room)
+        if (edit.room && found && found.includes(edit.room)) found = found.filter((el) => el !== edit.room)
+        if (found && found.length) {
+            setRoomList(room.filter((el) => !found.includes(el.id)).map((el) => el.id))
+            if (found.includes(item.room)) handleChange(undefined, 'room')
+        } else setRoomList(room.map((el) => el.id))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [item.date])
 
     return (
         <>
@@ -151,8 +179,8 @@ const ReservationForm = ({ history }) => {
             </div>
             <div className='d-flex justify-content-between flex-wrap form-create'>
                 {MultiFields([
-                    { label: 'Name', component: <InputBox value={item.name} disabled /> },
-                    { label: 'Room No.', component: <SelectBox error={error.room} options={room.map((x) => x.id)} value={item.room} onChange={(e) => handleChange(e, 'room')} /> },
+                    { label: 'Username', component: <InputBox value={item.name} disabled /> },
+                    { label: 'Room No.', component: <SelectBox error={error.room} options={roomList} value={item.room} onChange={(e) => handleChange(e, 'room')} /> },
                     {
                         label: 'Reservation Date',
                         component: (
@@ -161,10 +189,13 @@ const ReservationForm = ({ history }) => {
                                     className='width-full'
                                     value={item.date && moment(item.date) ? moment(item.date) : undefined}
                                     onChange={(e) => {
-                                        let _i = e && e._d ? moment(e._d).toISOString() : undefined
+                                        let _i = e && e._d ? moment(e._d).startOf('day').toISOString() : undefined
                                         handleChange(_i, 'date')
                                     }}
                                     format='DD/MM/YYYY'
+                                    disabledDate={(current) => {
+                                        return current && current < moment().endOf('day')
+                                    }}
                                 />
                                 <span style={{ color: 'red' }}>{error.date}</span>
                             </>

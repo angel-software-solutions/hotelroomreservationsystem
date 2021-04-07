@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom'
 import { getStorage } from '../util/storage'
 import Header from './Header'
 import Footer from './Footer'
@@ -20,6 +20,7 @@ const Restricted = (props) => {
                     <Route path='/' component={Home} exact />
                     <Route path='/reservation-list' component={ReservationList} exact />
                     <Route path='/create-reservation' component={ReservationForm} exact />
+                    <Redirect from='*' to='/' />
                 </Switch>
             </div>
             <Footer />
