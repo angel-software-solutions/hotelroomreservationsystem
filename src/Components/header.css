@@ -70,6 +70,9 @@ body {
 .mb-15 {
     margin-bottom: 15px;
 }
+.mb-25 {
+    margin-bottom: 25px;
+}
 
 .empty-data {
     text-align: center;

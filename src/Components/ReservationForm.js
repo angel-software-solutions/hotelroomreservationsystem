@@ -6,11 +6,12 @@ import { capitalize, getStorage } from '../util/storage'
 import Room from '../Data/Room'
 import moment from 'moment'
 import Bookings from '../Data/Booking'
+import { displayFormatter } from './ReservationList'
 
 function MultiFields(field) {
     let wide = isMobile() ? 100 : field.length === 1 ? 100 : 100 / field.length - 5
     return (
-        <div className='d-flex justify-content-between flex-wrap width-full mb-15'>
+        <div className='d-flex justify-content-between flex-wrap width-full mb-25'>
             {field.map((f) => {
                 return (
                     <div style={{ width: wide + '%' }}>
@@ -61,7 +62,7 @@ function TextArea({ error, value, onChange, ...props }) {
 }
 
 function isMobile() {
-    return window.innerWidth <= 767 ? true : false
+    return window.innerWidth <= 500 ? true : false
 }
 
 const ReservationForm = ({ history, location }) => {
@@ -76,9 +77,9 @@ const ReservationForm = ({ history, location }) => {
     const validate = () => {
         let flag = true
         let err = { client: {} }
-        let required = ['name', 'date', 'room']
+        let required = ['name', 'date', 'todate', 'room']
         required.forEach((field) => {
-            let msg = capitalize(field) + ' is required.'
+            let msg = (field === 'todate' ? 'Date' : capitalize(field)) + ' is required.'
             if (!item[field]) {
                 flag = false
                 err[field] = msg
@@ -155,18 +156,21 @@ const ReservationForm = ({ history, location }) => {
     }, [edit.room, edit])
 
     useEffect(() => {
-        let found = item.date && booking.filter((el) => el.date === item.date).map((el) => el.room)
+        let found =
+            item.date &&
+            item.todate &&
+            booking.filter((el) => !(moment(el.date).diff(moment(item.todate)) > 0 || moment(el.todate).diff(moment(item.date)) < 0)).map((el) => el.room)
         if (edit.room && found && found.includes(edit.room)) found = found.filter((el) => el !== edit.room)
         if (found && found.length) {
             setRoomList(room.filter((el) => !found.includes(el.id)).map((el) => el.id))
             if (found.includes(item.room)) handleChange(undefined, 'room')
         } else setRoomList(room.map((el) => el.id))
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [item.date])
+    }, [item.date, item.todate])
 
     return (
         <>
-            <div className='d-flex justify-content-between flex-wrap mb-15'>
+            <div className='d-flex justify-content-between flex-wrap mb-25'>
                 <h4>{item.id ? 'Edit' : 'Create'} Reservation</h4>
                 <div>
                     <Button variant='contained' onClick={onSave}>
@@ -177,31 +181,44 @@ const ReservationForm = ({ history, location }) => {
                     </Button>
                 </div>
             </div>
+            <h6>Booking Details</h6>
             <div className='d-flex justify-content-between flex-wrap form-create'>
                 {MultiFields([
-                    { label: 'Username', component: <InputBox value={item.name} disabled /> },
-                    { label: 'Room No.', component: <SelectBox error={error.room} options={roomList} value={item.room} onChange={(e) => handleChange(e, 'room')} /> },
                     {
                         label: 'Reservation Date',
                         component: (
                             <>
-                                <DatePicker
+                                <DatePicker.RangePicker
                                     className='width-full'
-                                    value={item.date && moment(item.date) ? moment(item.date) : undefined}
+                                    value={[item.date && moment(item.date) ? moment(item.date) : undefined, item.todate && moment(item.todate) ? moment(item.todate) : undefined]}
                                     onChange={(e) => {
-                                        let _i = e && e._d ? moment(e._d).startOf('day').toISOString() : undefined
-                                        handleChange(_i, 'date')
+                                        let _i = e && e[0] && e[0]._d ? moment(e[0]._d).startOf('day').toISOString() : undefined
+                                        let _to = e && e[1] && e[1]._d ? moment(e[1]._d).startOf('day').toISOString() : undefined
+                                        setItem({ ...item, date: _i, todate: _to })
                                     }}
                                     format='DD/MM/YYYY'
                                     disabledDate={(current) => {
                                         return current && current < moment().endOf('day')
                                     }}
                                 />
-                                <span style={{ color: 'red' }}>{error.date}</span>
+                                <span style={{ color: 'red' }}>{error.date ? error.date : error.todate}</span>
+                            </>
+                        )
+                    },
+                    { label: 'Room No.', component: <SelectBox error={error.room} options={roomList} value={item.room} onChange={(e) => handleChange(e, 'room')} /> },
+                    {
+                        label: 'Total',
+                        component: (
+                            <>
+                                {item.room && item.date && item.todate
+                                    ? 'Rs. ' +
+                                      displayFormatter(room.filter((el) => el.id === item.room)[0].cost * (moment(item.todate).diff(moment(item.date)) / (1000 * 60 * 60 * 24) + 1))
+                                    : 'Rs. 0.00'}
                             </>
                         )
                     }
                 ])}
+                <h6>Client Details</h6>
                 {MultiFields([
                     { label: 'Client Name', component: <InputBox value={item.client.name} error={error.client.name} onChange={(e) => clientChange(e.target.value, 'name')} /> },
                     {

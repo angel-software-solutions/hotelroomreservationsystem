@@ -12,7 +12,7 @@ const formatNumber = (num) => {
     return num ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') : 0
 }
 
-const displayFormatter = (num) => {
+export const displayFormatter = (num) => {
     if (!num || isNaN(parseFloat(num))) num = 0
     return formatNumber(parseFloat(num).toFixed(2))
 }
@@ -61,12 +61,20 @@ const ReservationList = ({ history }) => {
                                 </div>
                                 <h6>Booking Details</h6>
                                 <div className='d-flex justify-content-between'>
-                                    <span>Date:</span>
+                                    <span>From Date:</span>
                                     <span>{moment(x.date).format('ll')}</span>
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <span>To Date:</span>
+                                    <span>{moment(x.todate).format('ll')}</span>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <span>Booking Date:</span>
                                     <span>{moment(x.createdAt).format('ll')}</span>
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <span>Modified Date:</span>
+                                    <span>{moment(x.updatedAt).format('ll')}</span>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <span>Room:</span>
@@ -76,7 +84,11 @@ const ReservationList = ({ history }) => {
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <span>Price:</span>
-                                    <span>Rs.{displayFormatter(x.roomDetail.cost)}</span>
+                                    <span>Rs. {displayFormatter(x.roomDetail.cost)}</span>
+                                </div>
+                                <div className='d-flex justify-content-between'>
+                                    <span>Total:</span>
+                                    <span>Rs. {displayFormatter(x.roomDetail.cost * (moment(x.todate).diff(moment(x.date)) / (1000 * 60 * 60 * 24) + 1))}</span>
                                 </div>
                                 <div className='d-flex justify-content-between'>
                                     <span>Booked By:</span>

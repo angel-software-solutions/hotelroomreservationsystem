@@ -69,18 +69,12 @@ const Bookings = {
                 await self.getAll()
             }
             var current_list = self.find(id)
-            current_list.name = booking.name
             current_list.updatedAt = moment().startOf('day').toISOString()
             current_list.room = booking.room
             current_list.notes = booking.notes
             current_list.date = booking.date
+            current_list.todate = booking.todate
             current_list.client = booking.client
-            // TODO::verify client update
-            //     client: {
-            //         name: 'Yashi Sardhara',
-            //         mobile: '2747830292',
-            //         email: 'yashi@gmail.com'
-            //     },
             resolve(true)
         })
     },
