@@ -114,3 +114,13 @@ body {
         margin-bottom: 10px;
     }
 }
+
+.modal-back {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    background: black;
+    opacity: 0.5;
+}

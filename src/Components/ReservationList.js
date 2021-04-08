@@ -7,6 +7,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import Bookings from '../Data/Booking'
 import moment from 'moment'
 import { getStorage } from '../util/storage'
+import DeleteModal from './DeleteModal'
 
 const formatNumber = (num) => {
     return num ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') : 0
@@ -19,6 +20,7 @@ export const displayFormatter = (num) => {
 
 const ReservationList = ({ history }) => {
     const [booking, setBooking] = useState(null)
+    const [confirm, setConfirm] = useState(0)
 
     const getBooks = useCallback(async () => {
         let book = await Bookings.getAll()
@@ -30,6 +32,7 @@ const ReservationList = ({ history }) => {
     }, [getBooks])
 
     const deleteItem = async (id) => {
+        setConfirm(0)
         await Bookings.deletebooking(id)
         getBooks()
     }
@@ -52,7 +55,7 @@ const ReservationList = ({ history }) => {
                                         {getStorage('user').name === x.name && (
                                             <div style={{ cursor: 'pointer' }}>
                                                 <EditIcon fontSize='small' onClick={() => history.push('/create-reservation?' + x.id)} />
-                                                <DeleteForeverIcon fontSize='small' onClick={() => deleteItem(x.id)} />
+                                                <DeleteForeverIcon fontSize='small' onClick={() => setConfirm(x)} />
                                             </div>
                                         )}
                                     </div>
@@ -99,6 +102,14 @@ const ReservationList = ({ history }) => {
                     )
                 })}
             </div>
+            {confirm ? (
+                <DeleteModal
+                    visible={true}
+                    handleCancel={() => setConfirm(0)}
+                    handleOk={() => deleteItem(confirm.id)}
+                    name={'reservation for ' + confirm.client.name + ' from ' + moment(confirm.date).format('ll') + ' to ' + moment(confirm.todate).format('ll')}
+                />
+            ) : null}
         </>
     )
 }

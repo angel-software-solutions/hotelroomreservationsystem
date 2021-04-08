@@ -176,7 +176,7 @@ const ReservationForm = ({ history, location }) => {
                     <Button variant='contained' onClick={onSave}>
                         Save
                     </Button>
-                    <Button className='ml-2' variant='contained' onClick={() => history.push('/')}>
+                    <Button className='ml-2' variant='contained' onClick={() => history.push(location.search ? 'reservation-list' : '/')}>
                         Cancel
                     </Button>
                 </div>
