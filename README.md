@@ -17,13 +17,16 @@ Builds the app for production to the `build` folder.\
 
 Run build:
 npm install -g serve
+
 npx serve -s build
 Open http://localhost:5000 to view it in the browser.
 
 ### Users
 
 Currently activated users:
+
 Username: Optym01, Password: Optym01
+
 Username: Optym02, Password: Optym02
 
 Add new users, if required, in Data/User.js with unique ID.
