@@ -4,9 +4,11 @@ Install packages and dependencies.
 
 
 ### Run app in DEVELOPMENT mode.
+
 ### `npm start`
 
 Runs the app in the development mode.
+
 Open http://localhost:3000 to view it in the browser.
 
 ### Run app in PRODUCTION mode.
@@ -16,9 +18,11 @@ Open http://localhost:3000 to view it in the browser.
 Builds the app for production to the `build` folder.\
 
 Run build:
+
 npm install -g serve
 
 npx serve -s build
+
 Open http://localhost:5000 to view it in the browser.
 
 ### Users
