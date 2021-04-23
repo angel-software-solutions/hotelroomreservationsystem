@@ -138,7 +138,8 @@ const ReservationForm = ({ history, location }) => {
     }, [])
 
     const getBooks = useCallback(async () => {
-        let book = await Bookings.getAll()
+        let res = await Bookings.getAll()
+        let book= res.data||[]
         if (location.search) {
             let itm = book.find((el) => el.id === parseInt(location.search.split('?')[1]))
             if (itm) setEdit(itm)

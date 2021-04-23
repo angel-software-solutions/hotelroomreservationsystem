@@ -2,14 +2,41 @@ import moment from 'moment'
 import Room from './Room'
 import User from './User'
 
+let counter = 0
+
 const Bookings = {
     bookings: [],
 
-    getAll() {
+    async getAll() {
+        let flag = true
+        let res = {}
+        do {
+            res = await this.getData()
+            if (res.data) {
+                flag = false
+                counter = 0
+            }
+        } while (flag)
+        return res
+    },
+
+    getData() {
         var self = this
         return new Promise(async (resolve, reject) => {
             let list = await self.processAll(self.bookings)
-            resolve(list)
+            setTimeout(() => {
+                try {
+                    // if (Math.random() % 2 === 0)
+                    if (counter < 3) {
+                        counter++
+                        throw 'err'
+                    }
+                    resolve({ data: list, error: null })
+                } catch (e) {
+                    console.log('error', e)
+                    resolve({ data: null, error: e })
+                }
+            }, 3000)
         })
     },
 

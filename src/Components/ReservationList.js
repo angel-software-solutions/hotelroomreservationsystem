@@ -21,11 +21,18 @@ export const displayFormatter = (num) => {
 const ReservationList = ({ history }) => {
     const [booking, setBooking] = useState(null)
     const [confirm, setConfirm] = useState(0)
+    const [error,setError]=useState()
 
     const getBooks = useCallback(async () => {
-        let book = await Bookings.getAll()
-        setBooking(book)
-    }, [])
+        
+        let book= await Bookings.getAll()  
+        if(book.error){
+            setBooking([])
+            setError(book.error)
+            return
+        }
+        setBooking(book.data)
+    }, [error])
 
     useEffect(() => {
         getBooks()
@@ -37,8 +44,8 @@ const ReservationList = ({ history }) => {
         getBooks()
     }
 
-    return !booking ? null : !booking.length ? (
-        <div className='empty-data'>No Data Found.</div>
+    return !booking ? <span>Loading....</span> : !booking.length ? (
+        <div className='empty-data'>{error?error:'No Data Found.'}</div>
     ) : (
         <>
             <div className='d-flex justify-content-between flex-wrap'>
